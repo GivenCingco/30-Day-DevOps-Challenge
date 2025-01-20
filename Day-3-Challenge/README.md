@@ -6,6 +6,8 @@ This system leverages Amazon S3 to store unprocessed data, creates a glue databa
 - Fetches data from an external API and stores it in an S3 bucket.
 - Utilizes AWS Glue to prepare the data for querying by defining a schema and organizing the data.
 - Queries the Data using Amazon Athena.
+# Technical Architecture
+![diagram-export-20-01-2025-08_58_30.png](diagram-export-20-01-2025-08_58_30.png)
 ## Technologies
 - Language: Python 3.x
 - AWS Services used:
