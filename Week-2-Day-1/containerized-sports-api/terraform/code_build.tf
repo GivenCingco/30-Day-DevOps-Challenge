@@ -5,16 +5,16 @@ resource "aws_codebuild_project" "bitcube_codebuild" {
 
   source {
     type      = "GITHUB"
-    location  = "https://github.com/givencingco-bitcube/karmah-terraform"  
-    buildspec = "buildspec.yml" 
+    location  = "https://github.com/GivenCingco/30-Day-DevOps-Challenge.git"
+    buildspec = "Week-2-Day-1/containerized-sports-api/buildspec.yml"
   }
 
   environment {
-    compute_type = "BUILD_GENERAL1_SMALL"
-    image        = "aws/codebuild/standard:5.0"  
-    type         = "LINUX_CONTAINER"
+    compute_type    = "BUILD_GENERAL1_SMALL"
+    image           = "aws/codebuild/standard:5.0"
+    type            = "LINUX_CONTAINER"
     privileged_mode = true
-    
+
     environment_variable {
       name  = "AWS_DEFAULT_REGION"
       value = var.region
@@ -32,7 +32,7 @@ resource "aws_codebuild_project" "bitcube_codebuild" {
 
     environment_variable {
       name  = "IMAGE_TAG"
-      value = var.image_tag  
+      value = var.image_tag
     }
   }
 
@@ -42,11 +42,11 @@ resource "aws_codebuild_project" "bitcube_codebuild" {
     type = "NO_ARTIFACTS"
   }
 
-    logs_config {
+  logs_config {
     cloudwatch_logs {
-      group_name  = "CodeBuildBitcube"  
-      stream_name = "buildlogs"         
-      status      = "ENABLED"           
+      group_name  = "CodeBuildSportsData"
+      stream_name = "buildlogs"
+      status      = "ENABLED"
     }
   }
 
