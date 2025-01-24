@@ -38,3 +38,8 @@ variable "codestart_connector_cred" {
   description = "Variable for CodeStar connection credentials"
 
 }
+
+variable "api_key" {
+  description = "The API key for the service"
+  type        = string
+}

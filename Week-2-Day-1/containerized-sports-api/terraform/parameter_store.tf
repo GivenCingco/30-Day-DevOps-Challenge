@@ -25,3 +25,10 @@ resource "aws_ssm_parameter" "container_name" {
   type  = "String"
   value = "sports-data-api-container" # Replace with your desired container name
 }
+
+# Store API Key in SSM Parameter Store
+resource "aws_ssm_parameter" "serp_api_key" {
+  name  = "/myapp/SERP_API_KEY"
+  type  = "SecureString"  # Use SecureString for sensitive data
+  value = "641adad2edbfe9a8cfe8f52752b02f8ae451001fc76e84ea7f491cf3d729c30f"
+}
