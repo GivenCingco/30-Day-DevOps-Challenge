@@ -13,7 +13,7 @@ This project demonstrates building a containerized API management system for que
 - Secure storage of parameters in Parameter store
 - Security groups protecting resources by restricting access to trusted IP ranges, specific ports.
 - Enhance application performance by Load balancing user traffic and ensure high availability.
- 
+ - AWS CLoudWatch logs for monitoring
 ---
 
 ## **Technical Architecture**
@@ -32,6 +32,7 @@ This project demonstrates building a containerized API management system for que
   - Elastic Container service(Fargate)
   - CodeBuild
   - Parameter store
+  - Elastic Container Registry
 
 - **Programming Language**: Python 3.x
 - **Containerization**: Docker
