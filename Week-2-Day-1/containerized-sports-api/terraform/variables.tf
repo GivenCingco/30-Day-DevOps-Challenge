@@ -34,7 +34,7 @@ variable "github_url" {
 
 variable "codestart_connector_cred" {
   type        = string
-  default     = "arn:aws:codeconnections:us-east-1:009160050878:connection/e45787a2-fc5d-453f-a71f-58608f57d13b"
+  default     = "arn:aws:codeconnections:us-east-1:009160050878:connection/e45787a2-fc5d-453f-a71f"
   description = "Variable for CodeStar connection credentials"
 
 }
