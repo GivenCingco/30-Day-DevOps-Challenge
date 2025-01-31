@@ -1,12 +1,12 @@
 resource "aws_codebuild_project" "bitcube_codebuild" {
-  name          = "sports-data-api"
+  name          = "game-highlights"
   description   = "CodeBuild project for Sports data application"
   build_timeout = 60
 
   source {
     type      = "GITHUB"
     location  = "https://github.com/GivenCingco/30-Day-DevOps-Challenge.git"
-    buildspec = "Week-2-Day-2/containerized-sports-api/buildspec.yml"
+    buildspec = "Week-2-Day-4/src/buildspec.yml"
   }
 
   environment {

@@ -197,6 +197,11 @@ data "aws_iam_policy_document" "assume_role_policy" {
   }
 }
 
+resource "aws_iam_policy_attachment" "ssm_read_policy" {
+  name       = "ecs_ssm_read_policy"
+  roles      = [aws_iam_role.ecs_task_execution_role.name]
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
 
 # Attach the CloudWatch Logs Policy
 resource "aws_iam_role_policy" "cloudwatch_logs_permissions" {

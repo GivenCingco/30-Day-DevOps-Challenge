@@ -1,15 +1,15 @@
 # ECS Cluster
 resource "aws_ecs_cluster" "api_app_cluster" {
-  name = "sports-data-api-cluster"
+  name = "game-highlights-cluster"
 }
 
 # ECS Task Definition
 resource "aws_ecs_task_definition" "api_app_task" {
-  family                   = "sports-data-api-task-family"
+  family                   = "game-highlights-task-family"
   container_definitions    = <<DEFINITION
   [
     {
-      "name": "sports-data-api-task",
+      "name": "game-highlights-task",
       "image": "${aws_ecr_repository.sportsData_repository.repository_url}:latest",
       "essential": true,
       "portMappings": [
@@ -24,30 +24,32 @@ resource "aws_ecs_task_definition" "api_app_task" {
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "/ecs/SportDataAPI-api-task",
+          "awslogs-group": "/ecs/game-highlights-api-task",
           "awslogs-region": "us-east-1",
           "awslogs-stream-prefix": "ecs"
         }
       },
       "environment": [
         {
-          "name": "SPORTS_API_KEY", 
-          "value": "${var.api_key}"
-        },
-        {
         "name": "S3_BUCKET_NAME",
-        "value": "${aws_s3_bucket}"
+        "value": "${var.aws_s3_bucket}"
       },
       {
         "name": "MEDIACONVERT_ENDPOINT",
-        "value": "${mediaconvert_endpoint}"
+        "value": "${var.mediaconvert_endpoint}"
       },
       {
         "name": "MEDIACONVERT_ROLE_ARN",
-        "value": "${mediaconvert_role_arn}"
+        "value": "${var.mediaconvert_role_arn}"
       }
 
-      ]
+      ],
+          "secrets": [
+      {
+        "name": "RAPIDAPI_KEY",
+        "valueFrom": "${aws_ssm_parameter.rapid_api_key.arn}"
+      }
+    ]
     }
   ]
   DEFINITION
@@ -60,7 +62,7 @@ resource "aws_ecs_task_definition" "api_app_task" {
 
 # ECS Service
 resource "aws_ecs_service" "demo_app_service" {
-  name            = "SportDataAPI-api-service"
+  name            = "game-highlights-service"
   cluster         = aws_ecs_cluster.api_app_cluster.id
   task_definition = aws_ecs_task_definition.api_app_task.arn
   launch_type     = "FARGATE"
@@ -69,7 +71,7 @@ resource "aws_ecs_service" "demo_app_service" {
   # Reference existing ALB target group
   load_balancer {
     target_group_arn = aws_lb_target_group.alb-target-group.arn
-    container_name   = "sports-data-api-task"
+    container_name   = "game-highlights-task"
     container_port   = 8080
   }
 
@@ -85,7 +87,7 @@ resource "aws_ecs_service" "demo_app_service" {
 
 # IAM Role for Task Execution
 resource "aws_iam_role" "ecs_task_execution_role" {
-  name               = "SportDataAPI-api-task-execution-role"
+  name               = "game-highlights-task-execution-role"
   assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
 }
 

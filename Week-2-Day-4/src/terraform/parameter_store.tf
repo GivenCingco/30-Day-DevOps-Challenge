@@ -23,7 +23,7 @@ resource "aws_ssm_parameter" "image_tag" {
 resource "aws_ssm_parameter" "container_name" {
   name  = "/myapp/container-name"
   type  = "String"
-  value = "sports-data-api-container" # Replace with your desired container name
+  value = "game-highlights-container" # Replace with your desired container name
 }
 
 # Store API Key in SSM Parameter Store
