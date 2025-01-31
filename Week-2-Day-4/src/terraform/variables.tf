@@ -33,8 +33,9 @@ variable "region" {
 variable "github_url" {
   description = "source of the buildpec file on GitHub "
   type        = string
-  default     = "https://github.com/GivenCingco/30-Day-DevOps-Challenge/tree/main/Week-2-Day-1/containerized-sports-api"
+  default     = "https://github.com/GivenCingco/30-Day-DevOps-Challenge/tree/main/Week-2-Day-4/src"
 }
+
 
 variable "codestart_connector_cred" {
   type        = string
