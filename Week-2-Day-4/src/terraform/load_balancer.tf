@@ -22,7 +22,7 @@ resource "aws_lb_target_group" "alb-target-group" {
 
 
   health_check {
-    path                = "/sports" # The health check endpoint
+    path                = "/highlights" # The health check endpoint
     interval            = 30        # Interval between health checks (in seconds)
     timeout             = 5         # Timeout for each health check (in seconds)
     healthy_threshold   = 3         # Number of consecutive successful checks

@@ -13,7 +13,7 @@ variable "aws_s3_bucket" {
 variable "image_repo_name" {
   description = "Image repo name"
   type        = string
-  default     = "sports-api-repo"
+  default     = "sports-highlights-repo"
 }
 
 variable "image_tag" {

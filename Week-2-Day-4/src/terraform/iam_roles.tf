@@ -264,3 +264,89 @@ resource "aws_iam_role_policy" "alb_permissions" {
     ]
   })
 }
+
+# Additional Permissions: SSM Parameters, Secrets Manager, KMS Decryption
+resource "aws_iam_role_policy" "ecs_additional_permissions" {
+  name = "ECSAdditionalPermissions"
+  role = aws_iam_role.ecs_task_execution_role.name
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "ssm:GetParameter",
+          "ssm:GetParameters",
+          "ssm:GetParametersByPath"
+        ],
+        Resource = "arn:aws:ssm:us-east-1:${var.account_id}:parameter/*"
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "secretsmanager:GetSecretValue"
+        ],
+        Resource = "arn:aws:secretsmanager:us-east-1:${var.account_id}:secret:*"
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "kms:Decrypt"
+        ],
+        Resource = "arn:aws:kms:us-east-1:${var.account_id}:key/*"
+      }
+    ]
+  })
+}
+
+
+
+/* ===== Media Convert ==== */
+
+
+
+# Define the trust relationship for MediaConvert
+data "aws_iam_policy_document" "mediaconvert_trust" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["mediaconvert.amazonaws.com"]
+    }
+  }
+}
+
+
+# Create the MediaConvert role
+resource "aws_iam_role" "mediaconvert_role" {
+  name               = "highlights-mediaconvert-role"
+  assume_role_policy = data.aws_iam_policy_document.mediaconvert_trust.json
+}
+
+# Define the MediaConvert policy document
+data "aws_iam_policy_document" "mediaconvert_policy_doc" {
+  statement {
+    actions   = ["s3:GetObject", "s3:PutObject"]
+    effect    = "Allow"
+    resources = ["arn:aws:s3:::${var.aws_s3_bucket}/*"]
+  }
+  statement {
+    actions   = ["logs:CreateLogStream", "logs:PutLogEvents"]
+    effect    = "Allow"
+    resources = ["arn:aws:logs:${var.region}:009160050878:log-group:/ecs/highlights/*"]
+  }
+}
+
+
+# Create the MediaConvert policy
+resource "aws_iam_policy" "mediaconvert_policy" {
+  name   = "highlights-mediaconvert-s3-logs"
+  policy = data.aws_iam_policy_document.mediaconvert_policy_doc.json
+}
+
+# Attach the MediaConvert policy to the MediaConvert role
+resource "aws_iam_role_policy_attachment" "mediaconvert_attach" {
+  role       = aws_iam_role.mediaconvert_role.name
+  policy_arn = aws_iam_policy.mediaconvert_policy.arn
+}

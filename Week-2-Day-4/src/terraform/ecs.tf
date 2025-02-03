@@ -38,6 +38,10 @@ resource "aws_ecs_task_definition" "api_app_task" {
         "name": "MEDIACONVERT_ENDPOINT",
         "value": "${var.mediaconvert_endpoint}"
       },
+            {
+        "name": "AWS_REGION",
+        "value": "${var.region}"
+      },
       {
         "name": "MEDIACONVERT_ROLE_ARN",
         "value": "${var.mediaconvert_role_arn}"
