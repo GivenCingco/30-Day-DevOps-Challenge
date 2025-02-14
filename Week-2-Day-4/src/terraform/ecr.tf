@@ -1,15 +1,4 @@
-# Create the ECR repository with mutable image tags
-resource "aws_ecr_repository" "sportsData_repository" {
-  name                 = var.image_repo_name
+resource "aws_ecr_repository" "this" {
+  name                 = var.ecr_repository_name
   image_tag_mutability = "MUTABLE"
-
-  # Use the same repository policy as above if needed
-  image_scanning_configuration {
-    scan_on_push = true
-  }
-
-  tags = {
-    Terraform   = "true"
-    Environment = "dev"
-  }
 }

@@ -1,51 +1,62 @@
+# variables.tf
 
-variable "account_id" {
-  description = "AWS account ID"
+variable "aws_region" {
+  description = "AWS region for deployment"
   type        = string
-  default     = "009160050878"
 }
 
-variable "aws_s3_bucket" {
-  type    = string
-  default = "given-cingco-rapids"
-}
-
-variable "image_repo_name" {
-  description = "Image repo name"
+variable "project_name" {
+  description = "Name of the project"
   type        = string
-  default     = "sports-highlights-repo"
 }
 
-variable "image_tag" {
-  description = "Image tag"
+variable "environment" {
+  description = "Deployment environment (e.g., dev, prod, staging)"
   type        = string
-  default     = "latest"
 }
 
-
-variable "region" {
-  description = "Region"
+variable "s3_bucket_name" {
+  description = "Name of the S3 bucket for storing highlights"
   type        = string
-  default     = "us-east-1"
 }
 
-
-variable "github_url" {
-  description = "source of the buildpec file on GitHub "
+variable "ecr_repository_name" {
+  description = "Name of the ECR repository"
   type        = string
-  default     = "https://github.com/GivenCingco/30-Day-DevOps-Challenge/tree/main/Week-2-Day-4/src"
 }
 
-
-variable "codestart_connector_cred" {
+variable "vpc_id" {
+  description = "VPC ID"
   type        = string
-  default     = "arn:aws:codeconnections:us-east-1:009160050878:connection/e45787a2-fc5d-453f-a71f"
-  description = "Variable for CodeStar connection credentials"
-
 }
 
-variable "api_key" {
-  description = "The API key for the service"
+variable "public_subnets" {
+  description = "List of public subnet IDs"
+  type        = list(string)
+}
+
+variable "private_subnets" {
+  description = "List of private subnet IDs"
+  type        = list(string)
+}
+
+variable "igw_id" {
+  description = "Internet Gateway ID"
+  type        = string
+}
+
+variable "public_route_table_id" {
+  description = "Public Route Table ID"
+  type        = string
+}
+
+variable "private_route_table_id" {
+  description = "Private Route Table ID"
+  type        = list(string)
+}
+
+variable "rapidapi_ssm_parameter_arn" {
+  description = "ARN of the RapidAPI key stored in SSM Parameter Store"
   type        = string
 }
 
