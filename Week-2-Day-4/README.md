@@ -1,45 +1,60 @@
-# NCAAGameHighlights
 
+# NCAA Game Highlights
 
+## Project Overview
 This project uses RapidAPI to obtain NCAA game highlights using a Docker container and uses AWS Media Convert to convert the media file.
 
-# File Overview
+## Features
+- ***Fetch Highlights***: Download videos from the API, upload them to S3, and optimise their quality using AWS MediaConvert (e.g., resolution adjustments).
+- ***Process Videos***: Download videos from the API, upload them to S3, and optimise their quality using AWS MediaConvert (e.g., resolution adjustments, audio quality, etc.).
+- ***AWS MediaConvert***: Convert video files from one format to another, supporting a wide variety of formats like MP4, MOV, MKV, and more.
+- ***Storage***: Use Amazon S3 for storing large files, including video content.
 
-The config.py script performs the following actions:
-Imports necessary environment variables and assigns them to Python variables, providing default values where appropriate. This approach allows for flexible configuration management, enabling different settings for various environments (e.g., development, staging, production) without modifying the source code.
+## Project Files Overview
 
-The fetch.py script performs the following actions:
+### ***config.py***
+This code configures a project to fetch sports highlights, process videos using AWS MediaConvert, and store data in S3. It relies on environment variables for API settings, AWS resources, file paths, and retry/delay parameters, with default values provided for most configurations.
 
-Establishes the date and league that will be used to find highlights. We are using NCAA in this example because it's included in the free version.
-This will fetch the highlights from the API and store them in an S3 bucket as a JSON file (basketball_highlight.json)
+### ***fetch.py***
+This script fetches basketball highlights from an external API and uploads them to an Amazon S3 bucket.
+- Fetching highlights: The ***fetch_highlights function*** retrieves highlights using API credentials, date, league name, and a limit for the number of results. It handles errors if the API request fails.
+- Saving to S3: The ***save_to_s3 function*** checks if the specified S3 bucket exists, creates it if needed, and uploads the highlights as a JSON file to the bucket.
+- Workflow orchestration: The ***process_highlights function*** combines the fetching and saving steps, ensuring that highlights are retrieved and stored efficiently.
 
-process_one_video.py performs the following actions:
+### ***process_one_video.py***
+This script processes a single video from a JSON file stored in S3 and uploads it back to S3.
+- Fetch input: The ***process_one_video function*** connects to S3, retrieves a JSON file using the INPUT_KEY, and extracts the first video URL.
+- Download video: It makes an HTTP request to download the video content, using BytesIO to handle the video data in memory.
+- Upload to S3: The video is uploaded to the specified S3 bucket using the OUTPUT_KEY.
+- Error handling: The script catches and logs exceptions that occur during the process.
 
-Connects to the S3 bucket and retrieves the JSON file.
-Extracts the first video URL from within the JSON file.
-Downloads the video fiel from the internet into the memory using the requests library.
-Saves the video as a new file in the S3 bucket under a different folder (videos/)
-Logs the status of each step
 
-mediaconvert_process.py performs the following actions:
+### ***mediaconvert_process.py***
 
-Creates and submits a MediaConvert job
-Uses MediaConvert to process a video file - configures the video codec, resolution and bitrate. Also configured the audio settings
-Stores the processed video back into an S3 bucket
+This script creates an AWS MediaConvert job to process a video stored in an S3 bucket. It uses a defined set of configurations for input, output, video, and audio settings, then submits the job for processing.
 
-run_all.py performs the following actions:
+### ***run_all.py***
 Runs the scripts in a chronological order and provides buffer time for the tasks to be created.
 
-.env file stores all over the environment variables, these are variables that we don't want to hardcode into our script.
+### ***.env***
+This file stores all over the environment variables, these are variables that we don't want to hardcode into our script.
 
-Dockerfile performs the following actions:
+### ***Dockerfile***
 Provides the step by step approach to build the image.
 
-Terraform Scripts:
-These scripts are used to created resources in AWS in a scalable and repeatable way. All of the resources we work with like  S3, creating IAM user roles, elastic registry service and elastic container services is built here.
+## **Technologies**
+- **Cloud Provider**: AWS
+- **Services used**: 
+  - AWS MediaConvert
+  - Amazon Simple Storage Service
+  - IAM
+  
 
-# Prerequisites
-Before running the scripts, ensure you have the following:
+- **Programming Language**: Python 3.x
+- **Containerization**: Docker
+- **IAM Security**: Custom least privilege policies for ECS task execution and API Gateway
+
+# Step by step
 
 ## **1** Create Rapidapi Account
 Rapidapi.com account, will be needed to access highlight images and videos.
@@ -50,23 +65,26 @@ For this example we will be using NCAA (USA College Basketball) highlights since
 
 ## **2** Verify prerequites are installed 
 
-Docker should be pre-installed in most regions docker --version
+Ensure Docker, Python3, and the AWS CLI are installed on your iOS device to run the application locally. Additionally, confirm that your AWS credentials are configured on the device.
 
-AWS CloudShell has AWS CLI pre-installed aws --version
+***Check Docker version***
+```bash
+docker --version
+```
 
-Python3 should be pre-installed also python3 --version
+***Check AWS CLI version***
+```bash
+aws --version
+```
 
-## **3** Retrieve AWS Account ID
+***Check Python3 version***
 
-Copy your AWS Account ID Once logged in to the AWS Management Console Click on your account name in the top right corner You will see your account ID Copy and save this somewhere safe because you will need to update codes in the labs later
+```bash
+python3 --version
+```
 
-## **4** Retrieve Access Keys and Secret Access Keys
-You can check to see if you have an access key in the IAM dashboard
-Under Users, click on a user and then "Security Credentials"
-Scroll down until you see the Access Key section
-You will not be able to retrieve your secret access key so if you don't have that somewhere, you need to create an access key.
 ## **Technical Diagram**
-![GameHighlightProcessor](https://github.com/user-attachments/assets/762c3582-c6fe-48b2-b7da-0ff5b86b7970)
+![Alt Text](/Week-2-Day-2/NCAAGameHighlights/src/Week-2-Day-2.drawio.png)
 
 ## **Project Structure**
 ```bash
@@ -99,6 +117,7 @@ git clone https://github.com/alahl1/NCAAGameHighlights.git
 cd src
 ```
 ## **Step 2: Add API Key to AWS Secrets Manager**
+Run the code below on your terminal
 ```bash
 aws secretsmanager create-secret \
     --name my-api-key \
@@ -173,9 +192,8 @@ docker run --env-file .env highlight-processor
            
 This will run fetch.py, process_one_video.py and mediaconvert_process.py and the following files should be saved in your S3 bucket:
 
-Optional - Confirm there is a video uploaded to s3://<your-bucket-name>/videos/first_video.mp4
+![Alt Text](/Week-2-Day-2/NCAAGameHighlights/src/Screenshot%202025-01-28%20at%2014.20.38.png)
 
-Optional - Confirm there is a video uploaded to s3://<your-bucket-name>/processed_videos/
 
 ### **What We Learned**
 1. Working with Docker and AWS Services
@@ -186,6 +204,8 @@ Optional - Confirm there is a video uploaded to s3://<your-bucket-name>/processe
 1. Using Terraform to enhance the Infrastructure as Code (IaC)
 2. Increasing the amount of videos process and converted with AWS Media Convert
 3. Change the date from static (specific point in time) to dyanmic (now, last 30 days from today's date,etc)
+
+
 
 # Part 2 - Terraform Bonus
 
